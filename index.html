@@ -1,0 +1,823 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>大牟田中学校 校内AI活用研修スライド</title>
+<style>
+  :root {
+    --bg-main: #f8fafc;
+    --bg-card: #ffffff;
+    --text-main: #0f172a;
+    --text-sub: #334155;
+    --primary: #1e3a8a;
+    --primary-mid: #2563eb;
+    --primary-light: #eff6ff;
+    --border-color: #cbd5e1;
+    --accent-dark: #020617;
+  }
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+  body {
+    font-family: "Hiragino Kaku Gothic ProN", "Hiragino Sans", "BIZ UDPGothic", "Meiryo", sans-serif;
+    background-color: var(--accent-dark);
+    color: var(--text-main);
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    overflow: hidden;
+  }
+  /* Top Header Bar */
+  .top-bar {
+    background-color: #0f172a;
+    color: #ffffff;
+    padding: 8px 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.9rem;
+    border-bottom: 2px solid var(--primary-mid);
+    flex-shrink: 0;
+  }
+  .top-bar .badge {
+    background-color: var(--primary-mid);
+    color: #fff;
+    padding: 3px 10px;
+    border-radius: 4px;
+    font-weight: bold;
+    font-size: 0.8rem;
+    margin-right: 10px;
+  }
+  /* Slide Viewport */
+  .slide-viewport {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    overflow: hidden;
+    position: relative;
+  }
+  .slide {
+    background-color: var(--bg-card);
+    width: 100%;
+    max-width: 1200px;
+    height: 100%;
+    max-height: 675px;
+    border-radius: 12px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+    display: none;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 40px 56px;
+    position: relative;
+    overflow-y: auto;
+    border-top: 10px solid var(--primary);
+  }
+  .slide.active {
+    display: flex;
+  }
+  .slide.cover-slide {
+    background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%);
+    color: #ffffff;
+    border-top: none;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+  }
+  .slide-header {
+    border-bottom: 3px solid var(--primary-mid);
+    padding-bottom: 12px;
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+  }
+  .slide-step {
+    font-size: 0.95rem;
+    font-weight: bold;
+    color: var(--primary-mid);
+    letter-spacing: 0.05em;
+    display: block;
+    margin-bottom: 4px;
+  }
+  .slide-title {
+    font-size: 2rem;
+    font-weight: 800;
+    color: var(--primary);
+    line-height: 1.3;
+  }
+  .slide-body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 18px;
+    font-size: 1.25rem;
+    line-height: 1.6;
+  }
+  .grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    align-items: stretch;
+  }
+  .grid-3 {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 18px;
+    align-items: stretch;
+  }
+  .card {
+    background-color: var(--bg-main);
+    border: 2px solid var(--border-color);
+    border-left: 8px solid var(--primary);
+    border-radius: 8px;
+    padding: 20px 24px;
+  }
+  .card.highlight {
+    background-color: var(--primary-light);
+    border-color: var(--primary-mid);
+    border-left: 8px solid var(--primary-mid);
+  }
+  .card.dark-box {
+    background-color: #0f172a;
+    color: #ffffff;
+    border-color: #0f172a;
+    border-left: 8px solid var(--primary-mid);
+  }
+  .card h3 {
+    font-size: 1.35rem;
+    color: var(--primary);
+    margin-bottom: 10px;
+  }
+  .card.dark-box h3 {
+    color: #60a5fa;
+  }
+  .big-message {
+    background-color: #0f172a;
+    color: #ffffff;
+    padding: 18px 28px;
+    border-radius: 8px;
+    font-size: 1.35rem;
+    font-weight: bold;
+    text-align: center;
+    border-left: 8px solid #3b82f6;
+  }
+  ul.clean-list {
+    list-style: none;
+    padding-left: 0;
+  }
+  ul.clean-list li {
+    position: relative;
+    padding-left: 28px;
+    margin-bottom: 10px;
+  }
+  ul.clean-list li::before {
+    content: "■";
+    position: absolute;
+    left: 0;
+    color: var(--primary-mid);
+    font-size: 1.1rem;
+  }
+  .prompt-box {
+    background-color: #ffffff;
+    border: 2px solid var(--primary-mid);
+    border-radius: 8px;
+    padding: 14px 16px;
+    font-size: 1rem;
+    color: var(--text-main);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 10px;
+  }
+  .prompt-text {
+    background-color: #f1f5f9;
+    padding: 10px 12px;
+    border-radius: 6px;
+    font-family: monospace, sans-serif;
+    font-size: 0.92rem;
+    line-height: 1.45;
+    white-space: pre-wrap;
+    color: #0f172a;
+    border: 1px solid #cbd5e1;
+  }
+  .copy-btn {
+    background-color: var(--primary-mid);
+    color: #ffffff;
+    border: none;
+    border-radius: 6px;
+    padding: 10px 16px;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.2s;
+    text-align: center;
+  }
+  .copy-btn:hover {
+    background-color: var(--primary);
+  }
+  /* Speaker Notes Drawer */
+  .notes-panel {
+    position: fixed;
+    bottom: 60px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 90%;
+    max-width: 1100px;
+    background-color: rgba(15, 23, 42, 0.96);
+    color: #f8fafc;
+    border: 2px solid #3b82f6;
+    border-radius: 10px;
+    padding: 18px 24px;
+    font-size: 1.05rem;
+    line-height: 1.6;
+    display: none;
+    z-index: 100;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+  }
+  .notes-panel.show {
+    display: block;
+  }
+  .notes-panel h4 {
+    color: #60a5fa;
+    margin-bottom: 6px;
+    font-size: 1rem;
+  }
+  /* Bottom Navigation */
+  .bottom-nav {
+    background-color: #0f172a;
+    color: #ffffff;
+    padding: 10px 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px solid #334155;
+    flex-shrink: 0;
+  }
+  .nav-buttons {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+  }
+  .nav-btn {
+    background-color: #1e293b;
+    color: #ffffff;
+    border: 1px solid #475569;
+    padding: 8px 18px;
+    border-radius: 6px;
+    font-size: 0.95rem;
+    font-weight: bold;
+    cursor: pointer;
+  }
+  .nav-btn:hover {
+    background-color: var(--primary-mid);
+    border-color: var(--primary-mid);
+  }
+  .nav-btn.active-note {
+    background-color: #2563eb;
+    border-color: #60a5fa;
+  }
+  .progress-indicator {
+    font-size: 1.05rem;
+    font-weight: bold;
+    color: #93c5fd;
+  }
+  .tag-pill {
+    display: inline-block;
+    background: var(--primary);
+    color: #fff;
+    padding: 2px 10px;
+    border-radius: 99px;
+    font-size: 0.85rem;
+    margin-bottom: 6px;
+  }
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+  <div><span class="badge">大牟田中学校 校内研修</span>生成AI（Gemini）実践ワークショップ（60分）</div>
+  <div>キーボードの「←」「→」キーでスライド移動 ／ 「💡 講師メモ」で意図を表示</div>
+</div>
+
+<div class="slide-viewport">
+
+  <!-- Slide 1 -->
+  <div class="slide cover-slide active" data-note="【導入（2分）】まずは先生方の緊張をほぐす。「実は今日映しているこのスライド自体も、パワポではなくGeminiで作ったWebアプリです」と種明かしし、AIの可能性を最初に視覚的に伝える。">
+    <div style="max-width: 900px;">
+      <div style="display:inline-block; background:#2563eb; color:#fff; padding:6px 18px; border-radius:99px; font-weight:bold; font-size:1.1rem; margin-bottom:24px;">
+        大牟田中学校 先生方向け 校内研修（60分）
+      </div>
+      <h1 style="font-size:3.1rem; font-weight:900; line-height:1.3; margin-bottom:24px; color:#ffffff;">
+        明日の授業と校務が<br>ちょっとラクに、もっと面白くなる<br>「Gemini」実践講座
+      </h1>
+      <p style="font-size:1.4rem; color:#cbd5e1; margin-bottom:36px;">
+        〜 1人1台のiPadを「YouTubeを見る箱」から「最強の学習の武器」へ 〜
+      </p>
+      <div style="background:rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.25); padding:16px 28px; border-radius:8px; display:inline-block; font-size:1.1rem; color:#e2e8f0;">
+        講師：荒木 航（理科 ／ 2年A組担任）<br>
+        <span style="font-size:0.95rem; color:#93c5fd;">※本プレゼン資料自体も、学校のGemini（Canvas機能）で作成したWebスライドです</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Slide 2 -->
+  <div class="slide" data-note="【問題提起（3分）】私立中高一貫校として一番刺さる「保護者目線でのiPad活用」をぶつける。「先生方がサボっている」と責めるのではなく、「生徒からiPadを取り上げられない以上、私たちが賢い使い方を示すしかない」と共感を誘う。">
+    <div class="slide-header">
+      <div>
+        <span class="slide-step">STEP 01 ｜ なぜ今、私たちがAIを学ぶのか？</span>
+        <div class="slide-title">保護者が高い費用で買ったiPad、<br>「YouTubeを見る箱」になっていませんか？</div>
+      </div>
+    </div>
+    <div class="slide-body">
+      <div class="grid-2">
+        <div class="card">
+          <h3>⚠️ 私立・大牟田中としての危機感</h3>
+          <ul class="clean-list">
+            <li>全生徒が1人1台端末（iPad等）を所持しているが、授業での活用は一部の教科・場面に留まりがち。</li>
+            <li>家庭で「ゲームや動画を見る道具」になり、保護者から厳しい目を向けられるケースも。</li>
+            <li>かといって、今の時代に<strong>「iPadを持たせない・禁止する」ことは不可能</strong>。</li>
+          </ul>
+        </div>
+        <div class="card highlight">
+          <h3>💡 解決策は「教員が武器として使いこなす」こと</h3>
+          <ul class="clean-list">
+            <li>生徒に正しい活用を促すには、まず<strong>私たち教員がAIやICTの可能性を知り、授業で使う姿を見せる</strong>ことが不可欠。</li>
+            <li>さらに、AIを使えば<strong>「やりたくても時間がなくて諦めていた個別最適な教材づくり」</strong>がたった3分で実現できる！</li>
+          </ul>
+        </div>
+      </div>
+      <div class="big-message">
+        今日のテーマ：今の授業スタイルを壊さず、AIで「校務の時短」と「授業の3分エッセンス」を手に入れる！
+      </div>
+    </div>
+  </div>
+
+  <!-- Slide 3 -->
+  <div class="slide" data-note="【全体の流れ（2分）】前半25分はPCを閉じさせてプロジェクターの実演に集中させる（勝手に触って迷子になるのを防ぐため）。またレベル1〜3を提示し、「コピペだけでも100点」と伝えてベテラン先生の心理的ハードルを下げる。">
+    <div class="slide-header">
+      <div>
+        <span class="slide-step">STEP 02 ｜ 本日のゴールとタイムスケジュール</span>
+        <div class="slide-title">前半25分は「見るだけ」！後半25分で「選べる体験」</div>
+      </div>
+    </div>
+    <div class="slide-body">
+      <div class="grid-3">
+        <div class="card">
+          <span class="tag-pill">前半 25分</span>
+          <h3>👀 講義＆ライブ実演</h3>
+          <p style="font-size:1.05rem;"><strong>※まだPCは開かず画面にご注目ください！</strong><br>① 過去フォーマット完コピ術<br>② コース別授業の類題作成<br>③ 30秒で進化するアプリ実演</p>
+        </div>
+        <div class="card highlight">
+          <span class="tag-pill" style="background:#2563eb;">後半 25分</span>
+          <h3>💻 選べるハンズオン</h3>
+          <p style="font-size:1.05rem;">学校のGoogleアカウントで使える<strong>「Gemini」</strong>を開き、用意されたシートから<strong>自分が一番使いたいもの1つ</strong>を選んで体験！</p>
+        </div>
+        <div class="card">
+          <span class="tag-pill">最後 10分</span>
+          <h3>🔒 ルールとまとめ</h3>
+          <p style="font-size:1.05rem;">学校現場で絶対守るべき「個人情報・著作権」の基準と、明日からのサポート案内。</p>
+        </div>
+      </div>
+      <div class="card dark-box">
+        <h3>🎯 自分のペースでOK！3段階のゴール設定</h3>
+        <p style="font-size:1.1rem;">
+          🌱 <strong>レベル1（まずはここから）：</strong> 用意された指示文を<strong>そのままコピー＆ペースト</strong>してAIが動くのを体験する（これだけで大成功！）<br>
+          🌿 <strong>レベル2（標準コース）：</strong> 自分の担当教科や行事に合わせて、指示文の言葉を少し書き換えて出力する<br>
+          🌳 <strong>レベル3（応用コース）：</strong> Geminiの「Canvas」機能を使って、授業用フラッシュカードアプリの改造に挑戦する
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Slide 4 -->
+  <div class="slide" data-note="【大原則（3分）】「以前無料版のAIを使ったら嘘ばかりで使い物にならなかった」という不信感を払拭する最重要スライド。AIの頭で考えさせず、こちらの手元のプリントや過去データを渡せば無料版でも正確になることを強調する。">
+    <div class="slide-header">
+      <div>
+        <span class="slide-step">STEP 03 ｜ AI不信を解消する大原則</span>
+        <div class="slide-title">「無料版のAIは嘘をつく」を解決するたった1つのコツ</div>
+      </div>
+    </div>
+    <div class="slide-body">
+      <div class="grid-2">
+        <div class="card">
+          <h3>❌ なぜ今まで「使えない」と感じたのか？</h3>
+          <p style="margin-bottom:12px;"><strong>「中2の一次関数のテストを作って」「保護者向けの案内文を書いて」</strong>と、丸投げしていませんでしたか？</p>
+          <ul class="clean-list" style="font-size:1.1rem;">
+            <li>AIの「頭の中の知識」だけで答えさせると、大牟田中の実態に合わないよそよそしい文章や、習っていない範囲の問題が出ます。</li>
+          </ul>
+        </div>
+        <div class="card highlight">
+          <h3>⭕ 解決策：「手元の資料」を一緒に渡す！</h3>
+          <p style="margin-bottom:12px;">AIにゼロから考えさせず、<strong>「私たちが普段使っているプリントや過去データ」</strong>を添付・コピペして渡します。</p>
+          <ul class="clean-list" style="font-size:1.1rem;">
+            <li>「この過去プリントを元に」「この過去メールの文体を真似して」と指示するだけで、<strong>学校の無料アカウントでも劇的に正確</strong>になります！</li>
+          </ul>
+        </div>
+      </div>
+      <div class="big-message">
+        鉄則：AIには「ゼロから考えさせない」！手元のプリント・過去文面を渡して作業させる！
+      </div>
+    </div>
+  </div>
+
+  <!-- Slide 5 -->
+  <div class="slide" data-note="【実演①：校務時短（5分）】実際に学年通信の画像や過去の保護者メール文面をGeminiに貼り付け、日付と要点だけ伝えて3秒でそっくりな下書きが出る様子を実演する。また、先生のiPadにGeminiアプリを入れておけばプリント撮影が一瞬でできることも紹介する（当日はやらせない）。">
+    <div class="slide-header">
+      <div>
+        <span class="slide-step">LIVE DEMO 01 ｜ 校務・担任業務の時短革命</span>
+        <div class="slide-title">過去のフォーマット完コピ術！（学年通信・保護者メール）</div>
+      </div>
+    </div>
+    <div class="slide-body">
+      <div class="grid-2">
+        <div class="card">
+          <h3>📄 やり方は「過去データ＋今回のメモ」だけ</h3>
+          <ol style="padding-left:24px; line-height:1.8;">
+            <li><strong>過去に自分が作った学年通信・学級通信・保護者一斉メール</strong>の文章（または写真）をGeminiに貼り付ける。</li>
+            <li><strong>「このフォーマット・文体・温度感を完全に真似して、今回の〇〇の案内文を作って」</strong>と箇条書きメモを渡す。</li>
+            <li>よそよそしさゼロの「いつもの自分の文章」が3秒で完成！</li>
+          </ol>
+        </div>
+        <div class="card highlight">
+          <h3>📱 さらに便利！先生のiPad活用ワザ</h3>
+          <ul class="clean-list" style="font-size:1.1rem;">
+            <li>データが見つからない過去の紙プリントも、<strong>先生のiPad（Geminiアプリ）でパシャッと撮影して送信</strong>するだけ！</li>
+            <li>文字起こし不要で、紙のレイアウトや文体をAIが自動で読み取ってくれます。</li>
+            <li style="color:#1e3a8a; font-weight:bold;">※本日の体験では、すぐ使えるサンプル文章をご用意しています！</li>
+          </ul>
+        </div>
+      </div>
+      <div class="big-message">
+        ゼロから文章をひねり出す「最初の15分」をAIで3秒に短縮！先生は最後の微調整だけ！
+      </div>
+    </div>
+  </div>
+
+  <!-- Slide 6 -->
+  <div class="slide" data-note="【実演②：授業準備（5分）】国・数・英のコース分け授業に触れ、特に基礎コースの生徒向けに「問題集のコピーではなく、少し数値を変えた簡単な類題やヒント付きプリント」が3分で作れることを実演する。数学・理科でCO2や2乗が崩れる対策もここで伝える。">
+    <div class="slide-header">
+      <div>
+        <span class="slide-step">LIVE DEMO 02 ｜ 個別最適な授業準備・定期試験作成</span>
+        <div class="slide-title">コース別授業の救世主！「基礎コース向け類題」を3分で作成</div>
+      </div>
+    </div>
+    <div class="slide-body">
+      <div class="grid-2">
+        <div class="card">
+          <h3>✏️ 現場の悩み：プリントを作る時間がない！</h3>
+          <ul class="clean-list" style="font-size:1.1rem;">
+            <li>国・数・英のコース別授業で、「下のコースの生徒にもっと基礎の反復をさせたい」「でも問題集のコピーだと難しすぎる…」</li>
+            <li>Geminiに元の問題を渡せば、<strong>①数字や単語を少し変えた反復類題、②ヒント付きスモールステップ問題、③定期試験用の応用問題</strong>が一瞬でWord用に出力できます！</li>
+          </ul>
+        </div>
+        <div class="card dark-box">
+          <h3>⚠️ 数学・理科の先生へ（数式・化学式のコツ）</h3>
+          <p style="font-size:1.05rem; margin-bottom:10px;">
+            そのまま出力させると、二酸化炭素の「CO₂」が「CO2」と大きく表示されたり、2乗（x²）や分数がWord貼り付け時に崩れることがあります。
+          </p>
+          <div style="background:#1e293b; padding:12px; border-radius:6px; border:1px solid #3b82f6; font-size:1rem;">
+            <strong>💡 解決プロンプトの一言：</strong><br>
+            「化学式の下付き文字（CO₂など）や、数学の指数（x²など）は、Wordに貼り付けても崩れない正しい上付き・下付き表記で出力して」と添えるだけで解決！
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Slide 7 -->
+  <div class="slide" data-note="【実演③：アプリ作成の基本（5分）】授業を全部アプリにするのではなく「板書授業の中の3分間のスパイス」として使うことを強調。そして最も重要な「モデルをPro（上位）に切り替えること」「Canvasボタンを押すこと」の2点を実演画面で見せる。">
+    <div class="slide-header">
+      <div>
+        <span class="slide-step">LIVE DEMO 03 ｜ iPadを「学習の武器」に変える授業エッセンス</span>
+        <div class="slide-title">プログラミング不要！Geminiの「Canvas」で反復アプリ作成</div>
+      </div>
+    </div>
+    <div class="slide-body">
+      <div class="big-message" style="background:#1e3a8a;">
+        授業すべてを変える必要はありません！板書授業の「最後の3分間」だけ、iPadで反復エッセンスを入れる！
+      </div>
+      <div class="grid-2">
+        <div class="card highlight">
+          <h3>🔴 失敗しないための「2つの事前スイッチ」</h3>
+          <ol style="padding-left:24px; line-height:1.8; font-size:1.15rem;">
+            <li><strong>モデルを上位（Pro / Thinking）に切り替える！</strong><br>
+            <span style="font-size:0.95rem; color:#334155;">※初期設定（Flash）のままだと変なアプリになります。アプリ作成時だけは一番賢いモードへ！</span></li>
+            <li>入力欄の下にある<strong>「Canvas」ボタンをONにする！</strong><br>
+            <span style="font-size:0.95rem; color:#334155;">※これで画面の右側にアプリがそのまま立ち上がります。</span></li>
+          </ol>
+        </div>
+        <div class="card">
+          <h3>⚡ 実演：言葉だけでフラッシュカードが完成</h3>
+          <p style="font-size:1.1rem; margin-bottom:10px;">
+            「中2理科の化学反応式10問のフラッシュカードアプリを作って」と入力するだけで、<strong>1分後には画面上で動くアプリ</strong>が完成します。
+          </p>
+          <p style="font-size:1rem; color:#475569;">
+            ※全員が無理に作る必要はありません！「AIでこんなことまでできるんだ」と可能性を知っていただくだけでOKです。
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Slide 8 -->
+  <div class="slide" data-note="【実演④：アプリの改良と生徒管理（5分）】会場の先生に「どんな機能を足したいですか？」と聞いてその場で30秒で追加して見せる。さらにベテラン先生が最も懸念する「iPadを開かせると遊ばないか？」に対し、「3分制限＋結果スクショをロイロ提出」の鉄則を伝えて納得させる。">
+    <div class="slide-header">
+      <div>
+        <span class="slide-step">LIVE DEMO 04 ｜ 生徒と育てるアプリ＆サボらせない運用術</span>
+        <div class="slide-title">生徒の反応を見て30秒で改良！「3分＋スクショ提出」の鉄則</div>
+      </div>
+    </div>
+    <div class="slide-body">
+      <div class="grid-2">
+        <div class="card">
+          <h3>🔄 生徒に使わせながら「30秒」で改良する</h3>
+          <ul class="clean-list" style="font-size:1.1rem;">
+            <li>最初から完璧なアプリを作る必要はありません。</li>
+            <li>授業で生徒に使わせてみて、「ここが分かりにくい」「もっとこうしたい」という反応があれば、その場で<strong>「間違えた問題だけ復習する機能を追加して」「3分タイマーをつけて」</strong>と一言伝えるだけで即座に進化します！</li>
+          </ul>
+        </div>
+        <div class="card dark-box">
+          <h3>🛡️ 「裏でYouTubeを見ない？」を防ぐ黄金ルール</h3>
+          <p style="font-size:1.1rem; margin-bottom:12px;">
+            ダラダラ使わせるからよそ見をします。私の授業では以下の<strong>「3分間ルール」</strong>を徹底しています。
+          </p>
+          <div style="background:#1e293b; padding:14px; border-radius:6px; border-left:5px solid #60a5fa; font-size:1.05rem;">
+            <strong>① 制限時間はきっちり「3分間」！（5分は長すぎます）</strong><br>
+            <strong>② 3分後の「スコア画面」をスクリーンショット撮影！</strong><br>
+            <strong>③ そのまま「ロイロノート」で提出させてiPadを閉じる！</strong><br>
+            → 生徒はサボる暇が一切なく、教員も一覧で全員の定着度を把握できます。
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Slide 9 -->
+  <div class="slide" data-note="【後半ハンズオン（25分）】ここから一斉にPCを開かせる。タイピングが苦手な先生でもボタン1つでコピーしてGeminiに貼り付けられるよう、3つのコースのボタンを用意。事前に仕込んだ若手3〜4名の先生にはコースCをやってもらい、周囲のベテラン先生と画面を共有してもらう。">
+    <div class="slide-header">
+      <div>
+        <span class="slide-step">HANDS-ON ｜ 後半25分：選べる一括ハンズオン！</span>
+        <div class="slide-title">下のボタンから1つ選んでコピーし、Geminiに貼り付けよう！</div>
+      </div>
+    </div>
+    <div class="slide-body" style="gap:12px;">
+      <p style="font-size:1.05rem; color:#334155;">
+        ※ログインできない・操作が不安な先生は、お隣の先生とペアで画面を一緒に見ながら進めていただいてOKです！
+      </p>
+      <div class="grid-3">
+        <!-- Course A -->
+        <div class="prompt-box">
+          <div>
+            <span class="tag-pill">コースA（校務・担任向け）</span>
+            <h3 style="font-size:1.15rem; color:#1e3a8a; margin-bottom:6px;">過去フォーマット完コピ</h3>
+            <div class="prompt-text" id="prompt-a">以下の【過去の案内文】の文体・構成・温かみを完全に真似して、【今回の内容】を伝える保護者向け案内文を作成してください。足りない情報があれば私に最大3つまで質問してください。
+
+【過去の案内文】
+保護者の皆様、日頃より本校の教育活動にご理解とご協力をいただき心より感謝申し上げます。さて、来週は期末考査週間となります。ご家庭でも体調管理と学習時間の確保にお声かけをお願いいたします。
+
+【今回の内容】
+・来月10日（金）に授業参観と学級懇談会を実施
+・5時間目が参観、その後各教室で懇談会
+・詳細は後日配布のプリントにて</div>
+          </div>
+          <button class="copy-btn" onclick="copyText('prompt-a', this)">📋 コースAをコピーする</button>
+        </div>
+
+        <!-- Course B -->
+        <div class="prompt-box">
+          <div>
+            <span class="tag-pill" style="background:#2563eb;">コースB（全教科・授業向け）</span>
+            <h3 style="font-size:1.15rem; color:#1e3a8a; margin-bottom:6px;">基礎コース向け類題作成</h3>
+            <div class="prompt-text" id="prompt-b">あなたは中学校のベテラン教員です。以下の【元の問題】をもとに、数学や英語が苦手な「基礎コース」の生徒が自信を持って反復練習できるよう、以下の3パターンを作成してください。
+※数学の指数（x²など）や化学式の下付き文字（CO₂など）は崩れない正しい表記で出力してください。
+
+① 数字や単語だけを少し変えた基礎の反復類題（5問）
+② つまずきやすいポイントを補う「ヒント付き」スモールステップ問題（3問）
+③ 解答と、生徒が読んで納得できるやさしい解説
+
+【元の問題】
+一次関数 y = 2x + 3 について、xの値が1から4まで増加するときの変化の割合を求めなさい。また、yの増加量を求めなさい。</div>
+          </div>
+          <button class="copy-btn" onclick="copyText('prompt-b', this)">📋 コースBをコピーする</button>
+        </div>
+
+        <!-- Course C -->
+        <div class="prompt-box">
+          <div>
+            <span class="tag-pill" style="background:#0f172a;">コースC（応用・アプリ体験）</span>
+            <h3 style="font-size:1.15rem; color:#1e3a8a; margin-bottom:6px;">3分反復フラッシュカード</h3>
+            <div class="prompt-text" id="prompt-c">【※上位モデル（Pro）＆ CanvasをONにして実行】
+中学生がiPadのブラウザで3分間の反復学習に使える「フラッシュカード＆4択小テストアプリ」を、1つのHTMLファイル（CSS・JS込み）で作成してください。
+
+・テーマ：中学理科「重要な元素記号と化学式10問」（※CO₂などの下付き文字は正しく小さく表示すること）
+・機能1：カードをタップすると裏返って答えが見えるモード
+・機能2：3分間のタイマー付き4択クイズモード
+・機能3：終了後に「得点・クリア時間・間違えた問題一覧」が1画面に大きく表示される結果画面（ロイロノート提出のスクショ用）</div>
+          </div>
+          <button class="copy-btn" onclick="copyText('prompt-c', this)">📋 コースCをコピーする</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Slide 10 -->
+  <div class="slide" data-note="【逆質問テクニック（2分）】明日一人で使うときに「何て書けばいいか分からない」を防ぐ魔法の一言。AIから10個も質問が来てフリーズしないよう、「1つずつ（最大3つまで）質問して」と制限をかけるコツを伝える。">
+    <div class="slide-header">
+      <div>
+        <span class="slide-step">STEP 04 ｜ 明日自分のデスクで迷わないために</span>
+        <div class="slide-title">指示文で悩んだらこれだけ！魔法の「逆質問テクニック」</div>
+      </div>
+    </div>
+    <div class="slide-body">
+      <div class="grid-2">
+        <div class="card">
+          <h3>🤔 「何て指示を書けばいいか思いつかない…」</h3>
+          <p style="font-size:1.1rem; margin-bottom:12px;">
+            AIに完璧な指示文（プロンプト）を書く必要は一切ありません。普段の箇条書きメモや、<strong>「AIの方から質問させる」</strong>だけで解決します！
+          </p>
+          <ul class="clean-list" style="font-size:1.05rem;">
+            <li><strong>ポイント：</strong> ただ「質問して」と言うと一度に5〜6個質問されて大変なので、<strong>「最大3つまで質問して」</strong>と添えるのが現場のコツです！</li>
+          </ul>
+        </div>
+        <div class="card highlight" style="display:flex; flex-direction:column; justify-content:space-between;">
+          <div>
+            <h3>✨ そのまま使える魔法のフレーズ</h3>
+            <div class="prompt-text" id="prompt-magic" style="font-size:1.05rem; margin-top:10px; margin-bottom:14px;">私は中学校の教員です。これから【〇〇（例：中2英語の不定詞の小テスト／修学旅行の保護者案内文）】を作りたいです。
+良いものを作るために足りない情報があれば、作業を始める前に、私に1つずつ（最大3つまで）質問してください。</div>
+          </div>
+          <button class="copy-btn" onclick="copyText('prompt-magic', this)">📋 魔法の逆質問フレーズをコピーする</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Slide 11 -->
+  <div class="slide" data-note="【セキュリティと著作権（4分）】管理職や国語・英語の先生が最も気にするポイントを明確な法的根拠（著作権法第35条）とGoogle Workspaceの仕様で安心させる。「市販ワーク1冊丸ごとコピー配布」はNGだが、「1ページ撮って授業用の類題を作る」のは100%適法であることを明確に伝える。">
+    <div class="slide-header">
+      <div>
+        <span class="slide-step">STEP 05 ｜ 現場で守るべきルールと安心の根拠</span>
+        <div class="slide-title">これだけは守ろう！「個人情報」と「著作権」の明確な基準</div>
+      </div>
+    </div>
+    <div class="slide-body">
+      <div class="grid-2">
+        <div class="card dark-box">
+          <h3>🔒 1. 個人情報とセキュリティの鉄則</h3>
+          <ul class="clean-list" style="font-size:1.05rem;">
+            <li><strong>絶対に入れないもの：</strong> 生徒の氏名、成績データ、顔写真、個人が特定できる生徒指導・保健室の相談記録。</li>
+            <li><strong>学校のGoogleアカウントの強み：</strong> 本校のGoogle WorkspaceアカウントでログインしたGeminiは、<strong>入力したデータや写真がAIの学習に一切使われない（外部に漏れない）安全な保護仕様</strong>になっています！</li>
+          </ul>
+        </div>
+        <div class="card highlight">
+          <h3>📖 2. 問題集やプリントの「著作権」はどこまでOK？</h3>
+          <ul class="clean-list" style="font-size:1.05rem;">
+            <li><strong>⭕ 授業・テストでの利用は適法（著作権法第35条）：</strong><br>
+            担当クラスの生徒に配る範囲であれば、市販の問題集やプリントの1ページを写真に撮って<strong>「類題を作る」「基礎向けに書き換える」ことは法的に認められています。</strong></li>
+            <li><strong>❌ これだけはNG：</strong><br>
+            「市販のワーク丸ごと1冊をデータ化して配る（生徒がワークを買わなくて済むような行為）」や「他人の著作物をそのまま一般のWeb上に公開する」のはNGです。</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Slide 12 -->
+  <div class="slide" data-note="【まとめ（2分）】改めて「全部変える必要はない、1つの時短・3分のエッセンスから」と締めくくる。">
+    <div class="slide-header">
+      <div>
+        <span class="slide-step">STEP 06 ｜ 本日のまとめ</span>
+        <div class="slide-title">最初から完璧じゃなくていい。<br>まずは「1つの時短」「3分のエッセンス」から！</div>
+      </div>
+    </div>
+    <div class="slide-body">
+      <div class="grid-3">
+        <div class="card">
+          <h3>① 校務を3秒に！</h3>
+          <p style="font-size:1.05rem;">学年通信や保護者メールは、<strong>「過去のフォーマット」</strong>を渡して下書きを3秒で終わらせる。</p>
+        </div>
+        <div class="card highlight">
+          <h3>② 個別最適なプリント！</h3>
+          <p style="font-size:1.05rem;">時間がなくて諦めていた<strong>「基礎コース向けの反復類題」</strong>を、AIに3分で作らせる。</p>
+        </div>
+        <div class="card">
+          <h3>③ iPadを学習の武器に！</h3>
+          <p style="font-size:1.05rem;">授業の最後の<strong>「3分間＋結果スクショのロイロ提出」</strong>で、生徒が熱中する反復学習を実現する。</p>
+        </div>
+      </div>
+      <div class="big-message">
+        AIで生まれた「ゆとり」を、私たち教員にしかできない「生徒と向き合う時間」に使いましょう！
+      </div>
+    </div>
+  </div>
+
+  <!-- Slide 13 -->
+  <div class="slide cover-slide" data-note="【クロージング（2分）】「ネットへの公開（デプロイ）やiPadのアプリ設定はいつでも荒木が5分でサポートします！」と伝え、行動へのハードルをゼロにして拍手で終える。">
+    <div style="max-width: 900px;">
+      <div style="display:inline-block; background:#2563eb; color:#fff; padding:6px 18px; border-radius:99px; font-weight:bold; font-size:1.1rem; margin-bottom:20px;">
+        アフターサポートのご案内
+      </div>
+      <h2 style="font-size:2.6rem; font-weight:900; margin-bottom:24px; color:#ffffff;">
+        「生徒のiPadに配りたい！」と思ったら<br>いつでも荒木までお声がけください！
+      </h2>
+      <div class="grid-2" style="text-align:left; margin-bottom:30px;">
+        <div style="background:rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.3); padding:20px; border-radius:8px; color:#fff;">
+          <h3 style="color:#93c5fd; margin-bottom:8px; font-size:1.25rem;">🚀 アプリのロイロノート配布（5分で代行！）</h3>
+          <p style="font-size:1.05rem; line-height:1.5;">
+            今日Canvasで作ったアプリを「実際の授業で生徒のiPadに配りたい！」という時は、荒木にデータを送ってください。<strong>5分でWeb公開（デプロイ）し、ロイロノートで配れるURLにしてお渡しします！</strong>
+          </p>
+        </div>
+        <div style="background:rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.3); padding:20px; border-radius:8px; color:#fff;">
+          <h3 style="color:#93c5fd; margin-bottom:8px; font-size:1.25rem;">📱 iPadへのGemini導入・パスワード初期化</h3>
+          <p style="font-size:1.05rem; line-height:1.5;">
+            「自分のiPadでプリントをパシャッと撮って使いたい」「学校のGoogleアカウントのパスワードをリセットしたい」という方も、職員室でいつでもすぐ対応します！
+          </p>
+        </div>
+      </div>
+      <p style="font-size:1.3rem; font-weight:bold; color:#bfdbfe;">
+        本日は60分間、ご参加いただきありがとうございました！
+      </p>
+    </div>
+  </div>
+
+</div>
+
+<!-- Speaker Notes Panel -->
+<div class="notes-panel" id="notesPanel">
+  <h4>💡 講師用カンペ・このスライドの設計意図（ゴリ先生への補足メモ）</h4>
+  <div id="notesContent"></div>
+</div>
+
+<!-- Bottom Navigation -->
+<div class="bottom-nav">
+  <div class="nav-buttons">
+    <button class="nav-btn" onclick="prevSlide()">◀ 前へ</button>
+    <button class="nav-btn" onclick="nextSlide()">次へ ▶</button>
+    <button class="nav-btn" id="noteBtn" onclick="toggleNotes()">💡 講師メモ（意図）を表示</button>
+  </div>
+  <div class="progress-indicator" id="slideCounter">1 / 13</div>
+</div>
+
+<script>
+  const slides = document.querySelectorAll('.slide');
+  const counter = document.getElementById('slideCounter');
+  const notesPanel = document.getElementById('notesPanel');
+  const notesContent = document.getElementById('notesContent');
+  const noteBtn = document.getElementById('noteBtn');
+  let current = 0;
+
+  function updateSlide() {
+    slides.forEach((s, idx) => {
+      s.classList.toggle('active', idx === current);
+    });
+    counter.textContent = `${current + 1} / ${slides.length}`;
+    notesContent.textContent = slides[current].getAttribute('data-note') || '';
+  }
+
+  function nextSlide() {
+    if (current < slides.length - 1) {
+      current++;
+      updateSlide();
+    }
+  }
+
+  function prevSlide() {
+    if (current > 0) {
+      current--;
+      updateSlide();
+    }
+  }
+
+  function toggleNotes() {
+    notesPanel.classList.toggle('show');
+    noteBtn.classList.toggle('active-note');
+  }
+
+  function copyText(elementId, btn) {
+    const text = document.getElementById(elementId).innerText;
+    navigator.clipboard.writeText(text).then(() => {
+      const original = btn.innerText;
+      btn.innerText = "✅ コピーしました！Geminiに貼り付けてください";
+      btn.style.backgroundColor = "#15803d";
+      setTimeout(() => {
+        btn.innerText = original;
+        btn.style.backgroundColor = "";
+      }, 2500);
+    });
+  }
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight' || e.key === 'PageDown') nextSlide();
+    if (e.key === 'ArrowLeft' || e.key === 'PageUp') prevSlide();
+    if (e.key === 'n' || e.key === 'N') toggleNotes();
+  });
+
+  updateSlide();
+</script>
+</body>
+</html>
